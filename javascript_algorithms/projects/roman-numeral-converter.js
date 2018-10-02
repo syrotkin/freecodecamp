@@ -15,72 +15,51 @@ function convertToRoman(num) {
   return result;
 }
 
+// assumes that 3999 is the largest number.
 function convertDigit(digit, powerOfTenCounter) {
    switch (digit) {
      case 0: 
-      return "";
+        return "";
      case 1:
-      switch (powerOfTenCounter) {
-        case 0:
-          return "I";
-        case 1:
-          return "X";
-        case 2: 
-          return "C";
-        case 3:
-          return "M";
-        default:
-          return "";
-      }
+        switch (powerOfTenCounter) {
+          case 0:
+            return "I";
+          case 1:
+            return "X";
+          case 2: 
+            return "C";
+          case 3:
+            return "M";
+          default:
+            return "";
+        }
       case 2:
-      switch (powerOfTenCounter) {
-        case 0:
-          return "II";
-        case 1:
-          return "XX";
-        case 2: 
-          return "CC";
-        case 3:
-          return "MM";
-        default:
-          return "";
-      }
+        return convert(1, powerOfTenCounter) + convert(1, powerOfTenCounter);
       case 3:
-      switch (powerOfTenCounter) {
-        case 0:
-          return "III";
-        case 1:
-          return "XXX";
-        case 2: 
-          return "CCC";
-        case 3:
-          return "MMM";
-        default:
-          return "";
-      }
+        return convert(1, powerOfTenCounter) + convert(1, powerOfTenCounter) + convert(1, powerOfTenCounter);
       case 4:
-      switch (powerOfTenCounter) {
-        case 0:
-          return "IV";
-        case 1:
-          return "XL";
-        case 2: 
-          return "CD";
-        case 3:
-          return "MMMM";
-        default:
-          return "";
-      }
+        switch (powerOfTenCounter) {
+          case 0:
+            return "IV";
+          case 1:
+            return "XL";
+          case 2: 
+            return "CD";
+          case 3:
+            return "MMMM";
+          default:
+            return "";
+        }
       case 5:
       switch (powerOfTenCounter) {
         case 0:
           return "V";
         case 1:
-          return "XL";
+          return "L";
         case 2: 
           return "D";
         case 3:
-          return "MMMM";
+          return "MMMMM";
         default:
           return "";
       }
@@ -139,4 +118,4 @@ function convertDigit(digit, powerOfTenCounter) {
    }
 }
 
-//convertToRoman(36);
+convertToRoman(36);
