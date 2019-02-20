@@ -1,5 +1,3 @@
-// !! IMPORTANT README:
-
 // You may add additional external JS and CSS as needed to complete the project, however the current external resource MUST remain in place for the tests to work. BABEL must also be left in place. 
 
 
@@ -38,13 +36,21 @@ class QuoteMachine extends React.Component {
     return (
       <div id='quote-box' className='quoteBoxClass'>
         <div id='text' className="textClass" >{this.props.quote}</div>
-        <div id='author' className="authorClass">{this.props.author}</div>
+        <AuthorElement author={this.props.author} />
         <button id='new-quote' className='newQuoteClass' onClick={this.fetchNewQuote}>New Quote</button>
         <a id='tweet-quote' className="tweetClass" href={'https://twitter.com/intent/tweet?text="' +  this.props.quote + '"'}>Tweet Quote</a>
       </div>
     );
   }    
-}
+};
+
+// example of "function component", not defining a separate class for it.
+const AuthorElement = (props) => {
+  return (
+    <div id='author' className="authorClass">{props.author}
+    </div>
+  );
+};
 
 
 // redux:
@@ -53,9 +59,10 @@ const REQUESTING_DATA = 'REQUESTING_DATA';
 const RECEIVED_DATA = 'RECEIVED_DATA';
 
 // action creators
-const fetchNewQuoteCreator = () => {
+const fetchNewQuoteCreator = (data) => {
   return {
-    type: FETCH_NEW
+    type: FETCH_NEW,
+    data: data
   };
 };
 
@@ -76,8 +83,7 @@ function reduxGetQuoteIndex(array) {
     return Math.floor(Math.random() * array.length);
   }
 
-function reduxFetchNewQuote(state) {
-    let quotes = state.quotes;
+function reduxFetchNewQuote(quotes) {
     let index = reduxGetQuoteIndex(quotes);
     let quote = quotes[index].quote;
     let author = quotes[index].author;
@@ -115,9 +121,10 @@ const fetchAllQuotesAsync = () => {
 const rootReducer = (state = defaultState, action) => { 
   switch(action.type) {
     case FETCH_NEW:
-      let quote = reduxFetchNewQuote(state);
-      return Object.assign({}, state, {quote: quote.quote, 
-                                       author: quote.author});
+      // Important: not calling API in reducer. Instead, this is done in "mapDispatchToProps" 
+      //let quote = reduxFetchNewQuote(state);
+      return Object.assign({}, state, {quote: action.data.quote, 
+                                       author: action.data.author});
     // there is no case for FETCH_ALL. It is split into REQUESTING and RECEIVED
       
      case REQUESTING_DATA:
@@ -140,7 +147,9 @@ const connect = ReactRedux.connect;
 const mapDispatchToProps = (dispatch) => {
     return {
       dispatchFetchNewQuote: () => {
-        dispatch(fetchNewQuoteCreator());
+        var quotes = store.getState().quotes;
+        let quoteAndAuthor = reduxFetchNewQuote(quotes);
+        dispatch(fetchNewQuoteCreator(quoteAndAuthor));
       },
       dispatchFetchAllQuotes: () => {
         // fetchAllQuotesAsync encapsulates async call
